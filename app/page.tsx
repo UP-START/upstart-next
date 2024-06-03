@@ -1,11 +1,11 @@
 
-import { NavbarDemo } from "@/components/ui/navbarmenu"
+import SidebarMenu from "@/components/SidebarMenu"
+import { Button } from "@/components/ui/button"
 import Link from "next/link"
 
 export default function Component() {
   return (
     <div className="flex flex-col min-h-[100dvh]">
-      <NavbarDemo/>
       <header className="px-4 lg:px-6 h-14 flex items-center">
         <Link href="#" className="flex items-center justify-center" prefetch={false}>
           <MountainIcon className="h-6 w-6" />
@@ -22,7 +22,10 @@ export default function Component() {
             Events
           </Link>
           <Link href="#" className="text-sm font-medium hover:underline underline-offset-4" prefetch={false}>
-            Contact
+            Join
+          </Link>
+          <Link href="/login" prefetch={false}>
+            <Button size={'sm'}>Login</Button>
           </Link>
         </nav>
       </header>
