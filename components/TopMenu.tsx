@@ -23,6 +23,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { signOut } from "@/app/login/actions";
 
 export default function TopMenu({ pageTitle }) {
   return (
@@ -106,7 +107,10 @@ export default function TopMenu({ pageTitle }) {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>My Account</DropdownMenuLabel>
           <DropdownMenuSeparator />
+          <form action={signOut}>
           <DropdownMenuItem>Logout</DropdownMenuItem>
+
+          </form>
         </DropdownMenuContent>
       </DropdownMenu>
     </header>
