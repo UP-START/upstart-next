@@ -1,25 +1,33 @@
-// pages/profile.js
-"use client"
+import { createClient } from "@/utils/supabase/server";
+import { redirect } from "next/navigation";
 import React from "react";
-import { TooltipProvider } from "@radix-ui/react-tooltip";
 import SidebarMenu from "@/components/SidebarMenu";
 import TopMenu from "@/components/TopMenu";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 
-const profileData = {
-  image: "/path/to/profile-image.jpg", // Altere para o caminho real da imagem
-  name: "Gabriel Bueno",
-  handle: "gbuenos",
-  badges: ["CEO", "Marketing", "Tech"],
-  description: "O brabo da UPSTART",
-};
+export default async function ProtectedPage() {
+  const supabase = createClient();
 
-export default function Profile() {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return redirect("/login");
+  }
+  const profileData = {
+    image: "/path/to/profile-image.jpg", // Altere para o caminho real da imagem
+    name: "Gabriel Bueno",
+    handle: "gbuenos",
+    badges: ["CEO", "Marketing", "Tech"],
+    description: "O brabo da UPSTART",
+  };
+  
   return (
-    <TooltipProvider>
-      <div className="flex min-h-screen w-full flex-col bg-muted/40">
+    <div >
+  <div className="flex min-h-screen w-full flex-col bg-muted/40">
         <SidebarMenu />
         <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
           <TopMenu pageTitle="Profile Page" />
@@ -74,6 +82,10 @@ export default function Profile() {
           </main>
         </div>
       </div>
-    </TooltipProvider>
+      </div>
   );
 }
+
+
+
+
