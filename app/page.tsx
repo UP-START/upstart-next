@@ -236,7 +236,10 @@ export default function Component() {
   )
 }
 
-function MountainIcon(props) {
+interface IconProps extends React.SVGProps<SVGSVGElement> {}
+
+
+function MountainIcon(props: IconProps) {
   return (
     <svg
       {...props}
