@@ -111,8 +111,9 @@ export default function Component() {
     </Layout>
   );
 }
+interface IconProps extends React.SVGProps<SVGSVGElement> {}
 
-function ChevronDownIcon(props) {
+function ChevronDownIcon(props:IconProps) {
   return (
     <svg
       {...props}
@@ -131,7 +132,7 @@ function ChevronDownIcon(props) {
   );
 }
 
-function ThumbsUpIcon(props) {
+function ThumbsUpIcon(props:IconProps) {
   return (
     <svg
       {...props}
