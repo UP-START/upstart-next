@@ -149,7 +149,9 @@ export default function Events() {
   );
 }
 
-function CalendarIcon(props) {
+interface IconProps extends React.SVGProps<SVGSVGElement> {}
+
+function CalendarIcon(props: IconProps) {
   return (
     <svg
       {...props}
@@ -171,7 +173,7 @@ function CalendarIcon(props) {
   );
 }
 
-function UserIcon(props) {
+function UserIcon(props: IconProps) {
   return (
     <svg
       {...props}
