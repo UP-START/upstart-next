@@ -122,7 +122,9 @@ export default async function Community() {
   );
 }
 
-function FilterIcon(props) {
+interface IconProps extends React.SVGProps<SVGSVGElement> {}
+
+function FilterIcon(props: IconProps) {
   return (
     <svg
       {...props}
@@ -141,7 +143,7 @@ function FilterIcon(props) {
   );
 }
 
-function SearchIcon(props) {
+function SearchIcon(props: IconProps) {
   return (
     <svg
       {...props}
