@@ -1,4 +1,3 @@
-// components/TopMenu.js
 import React from "react";
 import Link from "next/link";
 import {
@@ -25,7 +24,13 @@ import {
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { signOut } from "@/app/login/actions";
 
-export default function TopMenu({ pageTitle }) {
+// Defina a interface para os props do componente
+interface TopMenuProps {
+  pageTitle: string;
+}
+
+// Use a interface no argumento do componente
+export default function TopMenu({ pageTitle }: TopMenuProps) {
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
       <Sheet>
@@ -108,11 +113,10 @@ export default function TopMenu({ pageTitle }) {
           <DropdownMenuLabel>My Account</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <form action={signOut}>
-          <DropdownMenuItem>Logout</DropdownMenuItem>
-
+            <DropdownMenuItem>Logout</DropdownMenuItem>
           </form>
         </DropdownMenuContent>
       </DropdownMenu>
     </header>
   );
-};
+}
