@@ -54,6 +54,8 @@ const formSchema = z.object({
 });
 
 type FormData = z.infer<typeof formSchema>;
+type RoleType = "Idea Guy" | "Communicator" | "Peacemaker" | "Problem Solver" | "Problem Finder" | "Executor";
+type ExpertiseType = "Business" | "Marketing" | "Tech" | "Design" | "Other";
 
 const interestOptions = [
   "Web3",
@@ -87,7 +89,7 @@ const OnboardingForm: React.FC = () => {
     },
   });
 
-  const handleRoleSelect = (role: string) => {
+  const handleRoleSelect = (role: RoleType) => {
     const currentRoles = form.getValues("roles");
     if (currentRoles.includes(role)) {
       form.setValue("roles", currentRoles.filter(r => r !== role));
@@ -147,12 +149,12 @@ const OnboardingForm: React.FC = () => {
         <FormLabel className="mt-8">Selecione o papel que mais ressoa com você:</FormLabel>
         <div className="flex flex-wrap gap-2">
           {[
-            { role: "Idea Guy", icon: Lightbulb },
-            { role: "Communicator", icon: Megaphone },
-            { role: "Peacemaker", icon: Bird },
-            { role: "Problem Solver", icon: Wrench },
-            { role: "Problem Finder", icon: Search },
-            { role: "Executor", icon: Settings },
+            { role: "Idea Guy" as RoleType, icon: Lightbulb },
+            { role: "Communicator" as RoleType, icon: Megaphone },
+            { role: "Peacemaker" as RoleType, icon: Bird },
+            { role: "Problem Solver" as RoleType, icon: Wrench },
+            { role: "Problem Finder" as RoleType, icon: Search },
+            { role: "Executor" as RoleType, icon: Settings },
           ].map(({ role, icon: Icon }) => (
             <Button
               key={role}
@@ -166,17 +168,19 @@ const OnboardingForm: React.FC = () => {
             </Button>
           ))}
         </div>
-        <FormMessage />
+        {form.formState.errors.roles && (
+          <FormMessage>{form.formState.errors.roles.message}</FormMessage>
+        )}
 
         {/* Expertise Selection */}
         <FormLabel className="mt-8">Escolha sua área principal de expertise ou interesse:</FormLabel>
         <div className="flex flex-wrap gap-2">
           {[
-            { expertise: "Business", icon: Briefcase },
-            { expertise: "Marketing", icon: BarChart },
-            { expertise: "Tech", icon: Monitor },
-            { expertise: "Design", icon: Paintbrush },
-            { expertise: "Other", icon: Box },
+            { expertise: "Business" as ExpertiseType, icon: Briefcase },
+            { expertise: "Marketing" as ExpertiseType, icon: BarChart },
+            { expertise: "Tech" as ExpertiseType, icon: Monitor },
+            { expertise: "Design" as ExpertiseType, icon: Paintbrush },
+            { expertise: "Other" as ExpertiseType, icon: Box },
           ].map(({ expertise, icon: Icon }) => (
             <Button
               key={expertise}
@@ -190,7 +194,9 @@ const OnboardingForm: React.FC = () => {
             </Button>
           ))}
         </div>
-        <FormMessage />
+        {form.formState.errors.expertise && (
+          <FormMessage>{form.formState.errors.expertise.message}</FormMessage>
+        )}
         {form.watch("expertise") === "Other" && (
           <FormField
             control={form.control}
@@ -222,7 +228,9 @@ const OnboardingForm: React.FC = () => {
             </Button>
           ))}
         </div>
-        <FormMessage />
+        {form.formState.errors.interests && (
+          <FormMessage>{form.formState.errors.interests.message}</FormMessage>
+        )}
 
         <Button type="submit" className="w-full mt-8">Enviar</Button>
       </form>
