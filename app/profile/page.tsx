@@ -10,13 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default async function ProtectedPage() {
   const supabase = createClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return redirect("/login");
-  }
+ 
   const profileData = {
     image: "/path/to/profile-image.jpg", // Altere para o caminho real da imagem
     name: "Gabriel Bueno",
