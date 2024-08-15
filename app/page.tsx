@@ -1,8 +1,21 @@
 
+import { redirect } from 'next/navigation';
+import { createClient } from "@/utils/supabase/server";
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 
-export default function Component() {
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: { code: string | undefined };
+}) {
+  const code = searchParams.code;
+
+  if (code) {
+    console.log('OAuth code received in root route, redirecting to callback');
+    redirect(`/auth/callback?code=${code}`);
+  }
+
   return (
     <div className="flex flex-col min-h-[100dvh]">
       <header className="px-4 lg:px-6 h-14 flex items-center">

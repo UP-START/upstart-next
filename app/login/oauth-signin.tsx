@@ -1,6 +1,5 @@
 "use client";
 
-///redirecionando pra rota errada após o login com discord
 import { Button } from "@/components/ui/button";
 import { Provider } from "@supabase/supabase-js";
 import { oAuthSignIn } from "./actions";
@@ -24,6 +23,7 @@ export function OAuthButtons() {
     <>
       {oAuthProviders.map((provider) => (
         <Button
+          key={provider.name}
           className="w-full flex items-center justify-center gap-2"
           variant="outline"
           onClick={async () => {
