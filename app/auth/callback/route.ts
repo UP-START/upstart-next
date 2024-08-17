@@ -2,18 +2,59 @@ import { createClient } from "@/utils/supabase/server";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
-  // The `/auth/callback` route is required for the server-side auth flow implemented
-  // by the SSR package. It exchanges an auth code for the user's session.
-  // https://supabase.com/docs/guides/auth/server-side/nextjs
+  console.log("Auth callback initiated");
+
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get("code");
   const origin = requestUrl.origin;
 
-  if (code) {
-    const supabase = createClient();
-    await supabase.auth.exchangeCodeForSession(code);
-  }
+  console.log(`Received code: ${code ? 'Yes' : 'No'}`);
+  console.log(`Origin: ${origin}`);
 
-  // URL to redirect to after sign up process completes
-  return NextResponse.redirect(`${origin}/profile`);
+  if (code) {
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+
+      if (error) {
+        console.error("Error exchanging code for session:", error);
+        return NextResponse.redirect(`${origin}/login?error=auth_error`);
+      }
+
+      console.log("Successfully exchanged code for session");
+
+      // Optional: Update user profile
+      if (data.session && data.session.user) {
+        const { user } = data.session;
+        console.log("User data:", user);
+
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .upsert({
+            id: user.id,
+            discord_uid: user.user_metadata.provider_id,
+            full_name: user.user_metadata.full_name,
+            avatar_url: user.user_metadata.avatar_url,
+            updated_at: new Date().toISOString()
+          }, {
+            onConflict: 'id'
+          });
+
+        if (profileError) {
+          console.error("Error updating profile:", profileError);
+        } else {
+          console.log("Profile updated successfully");
+        }
+      }
+
+      // Redirect to profile page after successful authentication
+      return NextResponse.redirect(`${origin}/profile`);
+    } catch (error) {
+      console.error("Unexpected error during authentication:", error);
+      return NextResponse.redirect(`${origin}/login?error=unexpected_error`);
+    }
+  } else {
+    console.log("No code provided, redirecting to login");
+    return NextResponse.redirect(`${origin}/login?error=no_code`);
+  }
 }
