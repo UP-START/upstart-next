@@ -23,7 +23,7 @@ export async function emailLogin(formData: FormData) {
     }
 
     revalidatePath('/', 'layout')
-    redirect('/profile')
+    redirect('/onboarding')
 }
 
 export async function signup(formData: FormData) {

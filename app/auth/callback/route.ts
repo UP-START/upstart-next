@@ -48,7 +48,7 @@ export async function GET(request: Request) {
       }
 
       // Redirect to profile page after successful authentication
-      return NextResponse.redirect(`${origin}/profile`);
+      return NextResponse.redirect(`${origin}/onboarding`);
     } catch (error) {
       console.error("Unexpected error during authentication:", error);
       return NextResponse.redirect(`${origin}/login?error=unexpected_error`);
