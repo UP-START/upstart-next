@@ -73,3 +73,13 @@ export async function oAuthSignIn(provider: Provider) {
 
     return redirect(data.url)
 }
+
+export async function handleDiscordLogin() {
+    const supabase = await createClient();
+    await supabase.auth.signInWithOAuth({
+      provider: "discord",
+      options: {
+        redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
+      },
+    });
+  }
