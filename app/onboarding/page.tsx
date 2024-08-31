@@ -1,9 +1,13 @@
-import React from "react";
-import OnboardingForm from "./OnboardingForm";
+"use client";
 
-const OnboardingPage = () => {
+import React from "react";
+import dynamic from 'next/dynamic';
+
+const OnboardingForm = dynamic(() => import('./OnboardingForm'), { ssr: false });
+
+const OnboardingPage: React.FC = () => {
   return (
-    <div className="container mx-auto p-6">
+    <div>
       <OnboardingForm />
     </div>
   );

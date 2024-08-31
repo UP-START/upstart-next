@@ -14,10 +14,10 @@ export default function Component() {
           <Link href="#" className="text-sm font-medium hover:underline underline-offset-4" prefetch={false}>
             About
           </Link>
-          <Link href="#" className="text-sm font-medium hover:underline underline-offset-4" prefetch={false}>
+          <Link href="" className="text-sm font-medium hover:underline underline-offset-4" prefetch={false}>
             Programs
           </Link>
-          <Link href="#" className="text-sm font-medium hover:underline underline-offset-4" prefetch={false}>
+          <Link href="/events" className="text-sm font-medium hover:underline underline-offset-4" prefetch={false}>
             Events
           </Link>
           <Link href="#" className="text-sm font-medium hover:underline underline-offset-4" prefetch={false}>
