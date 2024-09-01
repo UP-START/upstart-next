@@ -1,5 +1,5 @@
 "use client"
-
+import { submitForm } from './formsActions';
 import React, { useEffect, useState, useCallback } from "react";
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -298,50 +298,18 @@ const OnboardingForm: React.FC = () => {
   };
 
   const handleSubmit: SubmitHandler<FormData> = async (data) => {
-    console.log("Dados do formulário:", JSON.stringify(data, null, 2));
     setIsSubmitting(true);
     setSubmitError(null);
-    console.log("Iniciando submissão do formulário");
-  
-    try {
-      console.log("Dados do formulário:", data);
-  
-      const supabaseData: Record<string, any> = {
-        ...data,
-        first_name: data.firstName,
-        last_name: data.lastName,
-        roles: data.roles.join(','),
-        interests: data.interests.join(','),
-        motivations: data.motivations.join(','),
-      };
-  
-      console.log("Dados preparados para o Supabase:", supabaseData);
-  
-      if ('firstName' in supabaseData) delete supabaseData.firstName;
-      if ('lastName' in supabaseData) delete supabaseData.lastName;
-      if ('termsAgreement' in supabaseData) delete supabaseData.termsAgreement;
-  
-      console.log("Dados após remoção de campos desnecessários:", supabaseData);
-  
-      console.log("Iniciando inserção no Supabase");
-      const { data: insertedData, error } = await supabase
-        .from('onboarding_answers')
-        .insert([supabaseData]);
-  
-      if (error) {
-        console.error("Erro do Supabase:", error);
-        throw error;
-      }
-  
-      console.log('Dados inseridos com sucesso:', insertedData);
+    
+    const result = await submitForm(data);
+    
+    if (result.success) {
       router.push('/profile');
-    } catch (error: any) {
-      console.error('Erro detalhado ao submeter o formulário:', error);
-      setSubmitError(`Ocorreu um erro ao submeter o formulário: ${error.message || 'Erro desconhecido'}`);
-    } finally {
-      setIsSubmitting(false);
-      console.log("Submissão do formulário finalizada");
+    } else {
+      setSubmitError(result.error);
     }
+    
+    setIsSubmitting(false);
   };
 
   return (
