@@ -21,7 +21,7 @@ const TermsAndConditions: React.FC = () => {
     <div className="flex justify-center items-center min-h-screen p-4 bg-gray-100">
       <Card className="w-full max-w-3xl bg-white shadow-lg">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center">Termos e Condições</CardTitle>
+          <CardTitle className="text-2xl font-bold text-center">Terms of Use and Data Protection Agreement</CardTitle>
         </CardHeader>
         <CardContent>
           <ScrollArea className="h-[400px] pr-4">
@@ -51,10 +51,10 @@ const TermsAndConditions: React.FC = () => {
           </ScrollArea>
         </CardContent>
         <CardFooter className="flex justify-end space-x-4 pt-4">
-          <Button onClick={handleDecline} variant="outline" className="bg-gray-100 text-gray-700">
+          <Button onClick={handleDecline} variant="outline" className="bg-gray-100 text-700 hover:bg-red-600">
             Decline
           </Button>
-          <Button onClick={handleAccept} className="bg-green-500 text-white hover:bg-green-600">
+          <Button onClick={handleAccept} className="text-white hover:bg-green-600">
             Accept
           </Button>
         </CardFooter>

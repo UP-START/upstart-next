@@ -141,13 +141,13 @@ const motivationOptions: Array<{ value: MotivationType; label: string; icon: Rea
   { value: "WorkingCoolProjects", label: "Working in cool projects that inspires me", icon: Rocket },
   { value: "AccessMentoring", label: "Get access to mentoring", icon: Briefcase },
   { value: "MeetingPeople", label: "Meeting cool people", icon: Coffee },
-  { value: "Other", label: "Other", icon: PlusCircle },
+  { value: "Other", label: "Other", icon: Box },
 ];
 
 const innovationExperienceOptions: Array<{ value: InnovationExperienceType; label: string; icon: React.ElementType }> = [
   { value: "ExperiencedInProjects", label: "I've been part of projects before", icon: Briefcase },
   { value: "NewToExperience", label: "I'm new to this experience", icon: Sparkles },
-  { value: "Other", label: "Other", icon: PlusCircle },
+  { value: "Other", label: "Other", icon: Box },
 ];
 
 const academicLevelOptions: Array<{ value: AcademicLevelType; label: string; icon: React.ElementType }> = [

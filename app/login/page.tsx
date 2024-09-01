@@ -34,20 +34,22 @@ export default async function Login({
   return (
     <section className="flex flex-col items-center justify-center min-h-screen bg-background">
       <Card className="mx-auto max-w-sm text-center">
-        <CardHeader>
-          <div className="flex justify-center items-center text-center mb-4">
-            <CardTitle className="text-3xl items-center">Login</CardTitle>
+      <CardHeader className="relative">
+        <div className="flex flex-col items-center justify-center relative mb-2">
+          <CardTitle className="text-3xl">Login</CardTitle>
+          <span className="absolute top-0 right-0">
             <ThemeToggle />
-          </div>
-          <CardDescription className="text-lg">
-            Welcome Back to UPSTART!
-          </CardDescription>
-        </CardHeader>
+          </span>
+        </div>
+        <CardDescription className="text-lg text-center mt-4">
+          Welcome Back to UPSTART!
+        </CardDescription>
+      </CardHeader>
         <CardContent className="flex flex-col gap-4">
           <OAuthButtons />
           <div className="text-center text-sm">
             Don&apos;t have an account?{" "}
-            <button formAction={signup} form="login-form" className="underline">
+            <button formAction={signup} form="login-form" className="text-primary hover:underline">
               Sign up
             </button>
           </div>
