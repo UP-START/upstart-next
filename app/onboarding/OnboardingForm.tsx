@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import React, { useEffect, useState, useCallback } from "react";
 import { useSearchParams, useRouter } from 'next/navigation';
@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Checkbox as ShadcnCheckbox } from "@/components/ui/checkbox";
 import {
   Lightbulb,
   Megaphone,
@@ -47,6 +48,23 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+
+const generateUniqueId = (prefix: string) => `${prefix}-${Math.random().toString(36).substr(2, 9)}`;
+
+// Custom Checkbox component
+const CustomCheckbox = React.forwardRef<HTMLButtonElement, React.ComponentPropsWithoutRef<typeof ShadcnCheckbox> & { id: string; name: string }>(
+  ({ id, name, ...props }, ref) => {
+    return (
+      <ShadcnCheckbox
+        ref={ref}
+        {...props}
+        id={id}
+        name={name}
+      />
+    );
+  }
+);
+CustomCheckbox.displayName = 'CustomCheckbox';
 
 // Schema for the form validation
 const formSchema = z.object({
@@ -220,7 +238,7 @@ const OnboardingForm: React.FC = () => {
 
   useEffect(() => {
     setMounted(true)
-    addLog("Component mounted")
+    addLog("Componente montado")
     const testSupabaseConnection = async () => {
       try {
         const { data, error } = await supabase
@@ -229,9 +247,9 @@ const OnboardingForm: React.FC = () => {
           .limit(1)
 
         if (error) throw error
-        addLog('Supabase connection successful: ' + JSON.stringify(data))
+        addLog('Conexão com Supabase bem-sucedida: ' + JSON.stringify(data))
       } catch (error) {
-        addLog('Supabase connection error: ' + JSON.stringify(error))
+        addLog('Erro na conexão com Supabase: ' + JSON.stringify(error))
       }
     }
 
@@ -327,45 +345,68 @@ const OnboardingForm: React.FC = () => {
   };
 
   return (
-    <div className="relative max-w-4xl mx-auto p-6">
+    <div className="relative max-w-4xl mx-auto p-6 mt-4"> {/* Adicionada margem no topo */}
+      <div className="absolute top-0 left-0 right-0 flex justify-between items-center">
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+        >
+          <SunIcon className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+          <MoonIcon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+          <span className="sr-only">Alternar tema</span>
+        </Button>
+        <ProblemsButton />
+      </div>
       <h1 className="text-3xl font-bold mb-8 text-center">Bem-vindo à UPSTART!</h1>
-      <Button
-        variant="outline"
-        size="icon"
-        onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-      >
-        <SunIcon className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-        <MoonIcon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-        <span className="sr-only">Toggle theme</span>
-      </Button>
-      <ProblemsButton />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
-          {/* Name Fields */}
+          {/* Campos de Nome */}
           <FormField
-          control={form.control}
-          name="firstName"
-          render={({ field }) => (
-            <FormItem className="w-full">
-              <FormLabel className="text-lg font-semibold">Let's start by getting to know you a bit. <strong>What's your name?</strong></FormLabel>
-              <div className="grid grid-cols-2 gap-4 mt-3">
+            control={form.control}
+            name="firstName"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel htmlFor="firstName" className="text-lg font-semibold">Vamos começar conhecendo você um pouco. <strong>Qual é o seu nome?</strong></FormLabel>
+                <div className="grid grid-cols-2 gap-4 mt-3">
+                  <FormControl>
+                    <Input id="firstName" placeholder="Seu nome" {...field} className="h-10" />
+                  </FormControl>
+                  <FormField
+                    control={form.control}
+                    name="lastName"
+                    render={({ field: lastNameField }) => (
+                      <FormControl>
+                        <Input id="lastName" placeholder="Seu sobrenome" {...lastNameField} className="h-10" />
+                      </FormControl>
+                    )}
+                  />
+                </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel htmlFor="email" className="text-lg font-semibold">Seu <strong>endereço de e-mail</strong>:</FormLabel>
                 <FormControl>
-                  <Input placeholder="Your name" {...field} className="h-10" />
+                  <Input 
+                    id="email" 
+                    type="email" 
+                    placeholder="Seu endereço de e-mail" 
+                    {...field} 
+                    className="h-10"
+                    autoComplete = "NULL"  // Adicionado o atributo autocomplete
+                  />
                 </FormControl>
-                <FormField
-                  control={form.control}
-                  name="lastName"
-                  render={({ field: lastNameField }) => (
-                    <FormControl>
-                      <Input placeholder="Your Surname" {...lastNameField} className="h-10" />
-                    </FormControl>
-                  )}
-                />
-              </div>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
           {/* Divisória personalizada */}
           <div className="my-12">
@@ -383,30 +424,43 @@ const OnboardingForm: React.FC = () => {
           <FormField
             control={form.control}
             name="roles"
-            render={() => (
+            render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-lg font-semibold">Select the <strong>role(s) that resonates with you</strong> the most:</FormLabel>
-                <div className="grid grid-cols-3 gap-4 mt-3">
-                  {[
-                    { role: "Idea Guy" as RoleType, icon: Lightbulb },
-                    { role: "Communicator" as RoleType, icon: Megaphone },
-                    { role: "Peacemaker" as RoleType, icon: Bird },
-                    { role: "Problem Solver" as RoleType, icon: Wrench },
-                    { role: "Problem Finder" as RoleType, icon: Search },
-                    { role: "Executor" as RoleType, icon: Settings },
-                  ].map(({ role, icon: Icon }) => (
-                    <Button
-                      key={role}
-                      type="button"
-                      variant={form.watch("roles").includes(role) ? "default" : "outline"}
-                      onClick={() => handleRoleSelect(role)}
-                      className="h-32 flex flex-col items-center justify-center"
-                    >
-                      <Icon className="w-8 h-8 mb-2" />
-                      <span className="text-sm font-medium text-center">{role}</span>
-                    </Button>
-                  ))}
-                </div>
+                <fieldset>
+                  <legend className="text-lg font-semibold mb-3">
+                    Select the <strong>role(s) that resonate with you</strong> the most:
+                  </legend>
+                  <div className="grid grid-cols-3 gap-4">
+                    {([
+                      { role: "Idea Guy", icon: Lightbulb },
+                      { role: "Communicator", icon: Megaphone },
+                      { role: "Peacemaker", icon: Bird },
+                      { role: "Problem Solver", icon: Wrench },
+                      { role: "Problem Finder", icon: Search },
+                      { role: "Executor", icon: Settings },
+                    ] as const).map(({ role, icon: Icon }) => {
+                      const isSelected = field.value.includes(role);
+                      return (
+                        <Button
+                          key={role}
+                          type="button"
+                          variant={isSelected ? "default" : "outline"}
+                          onClick={() => {
+                            const updatedRoles = isSelected
+                              ? field.value.filter((r: RoleType) => r !== role)
+                              : [...field.value, role];
+                            field.onChange(updatedRoles);
+                          }}
+                          className="h-32 flex flex-col items-center justify-center"
+                          aria-pressed={isSelected}
+                        >
+                          <Icon className="w-8 h-8 mb-2" />
+                          <span className="text-sm font-medium text-center">{role}</span>
+                        </Button>
+                      );
+                    })}
+                  </div>
+                </fieldset>
                 <FormMessage />
               </FormItem>
             )}
@@ -416,43 +470,49 @@ const OnboardingForm: React.FC = () => {
           <FormField
             control={form.control}
             name="expertise"
-            render={() => (
+            render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-lg font-semibold">Choose your <strong>primary area of expertise or interest</strong>:</FormLabel>
-                <div className="grid grid-cols-3 gap-4 mt-3">
-                  {[
-                    { expertise: "Business" as ExpertiseType, icon: Briefcase },
-                    { expertise: "Marketing" as ExpertiseType, icon: BarChart },
-                    { expertise: "Tech" as ExpertiseType, icon: Monitor },
-                    { expertise: "Design" as ExpertiseType, icon: Paintbrush },
-                    { expertise: "Other" as ExpertiseType, icon: Box },
-                  ].map(({ expertise, icon: Icon }) => (
-                    <Button
-                      key={expertise}
-                      type="button"
-                      variant={form.watch("expertise") === expertise ? "default" : "outline"}
-                      onClick={() => form.setValue("expertise", expertise)}
-                      className="h-32 flex flex-col items-center justify-center"
-                    >
-                      <Icon className="w-8 h-8 mb-2" />
-                      <span className="text-sm font-medium text-center">{expertise}</span>
-                    </Button>
-                  ))}
-                </div>
+                <fieldset>
+                  <legend className="text-lg font-semibold mb-3">
+                    Choose your <strong>primary area of expertise or interest</strong>:
+                  </legend>
+                  <div className="grid grid-cols-3 gap-4">
+                    {([
+                      { expertise: "Business", icon: Briefcase },
+                      { expertise: "Marketing", icon: BarChart },
+                      { expertise: "Tech", icon: Monitor },
+                      { expertise: "Design", icon: Paintbrush },
+                      { expertise: "Other", icon: Box },
+                    ] as const).map(({ expertise, icon: Icon }) => (
+                      <Button
+                        key={expertise}
+                        type="button"
+                        variant={field.value === expertise ? "default" : "outline"}
+                        onClick={() => field.onChange(expertise)}
+                        className="h-32 flex flex-col items-center justify-center"
+                        aria-pressed={field.value === expertise}
+                      >
+                        <Icon className="w-8 h-8 mb-2" />
+                        <span className="text-sm font-medium text-center">{expertise}</span>
+                      </Button>
+                    ))}
+                  </div>
+                </fieldset>
                 <FormMessage />
               </FormItem>
             )}
           />
 
+          {/* Adicione o campo de input para "Other" expertise */}
           {form.watch("expertise") === "Other" && (
             <FormField
               control={form.control}
               name="otherExpertise"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-lg font-semibold">What's your <strong>expertise</strong>?</FormLabel>
+                  <FormLabel>What's your <strong>expertise</strong>?</FormLabel>
                   <FormControl>
-                    <Input placeholder="Your expertise" {...field} className="h-10" />
+                    <Input placeholder="Your expertise" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -464,22 +524,35 @@ const OnboardingForm: React.FC = () => {
           <FormField
             control={form.control}
             name="interests"
-            render={() => (
+            render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-lg font-semibold">Select your <strong>interests</strong> from those:</FormLabel>
-                <div className="flex flex-wrap gap-2 mt-3">
-                  {interestOptions.map((interest) => (
-                    <Button
-                      key={interest}
-                      type="button"
-                      variant={form.watch("interests").includes(interest) ? "default" : "outline"}
-                      onClick={() => handleInterestSelect(interest)}
-                      className="p-2 h-10"
-                    >
-                      <span className="text-sm">{interest}</span>
-                    </Button>
-                  ))}
-                </div>
+                <fieldset>
+                  <legend className="text-lg font-semibold mb-3">
+                    Select your <strong>interests</strong> from those:
+                  </legend>
+                  <div className="flex flex-wrap gap-2">
+                    {interestOptions.map((interest) => {
+                      const isSelected = field.value.includes(interest);
+                      return (
+                        <Button
+                          key={interest}
+                          type="button"
+                          variant={isSelected ? "default" : "outline"}
+                          onClick={() => {
+                            const updatedInterests = isSelected
+                              ? field.value.filter((i: string) => i !== interest)
+                              : [...field.value, interest];
+                            field.onChange(updatedInterests);
+                          }}
+                          className="p-2 h-10"
+                          aria-pressed={isSelected}
+                        >
+                          <span className="text-sm">{interest}</span>
+                        </Button>
+                      );
+                    })}
+                  </div>
+                </fieldset>
                 <FormMessage />
               </FormItem>
             )}
@@ -501,39 +574,51 @@ const OnboardingForm: React.FC = () => {
           <FormField
             control={form.control}
             name="motivations"
-            render={() => (
+            render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-lg font-semibold">
-                  <strong>What brings you to our community</strong>? Select all that apply:
-                </FormLabel>
-                <div className="grid grid-cols-2 gap-4 mt-3">
-                  {motivationOptions.map(({ value, label, icon: Icon }) => (
-                    <Button
-                      key={value}
-                      type="button"
-                      variant={form.watch("motivations").includes(value) ? "default" : "outline"}
-                      onClick={() => handleMotivationSelect(value)}
-                      className="h-32 flex flex-col items-center justify-center"
-                    >
-                      <Icon className="w-8 h-8 mb-2" />
-                      <span className="text-sm font-medium text-center">{label}</span>
-                    </Button>
-                  ))}
-                </div>
+                <fieldset>
+                  <legend className="text-lg font-semibold mb-3">
+                    <strong>What brings you to our community</strong>? Select all that apply:
+                  </legend>
+                  <div className="grid grid-cols-2 gap-4">
+                    {motivationOptions.map(({ value, label, icon: Icon }) => {
+                      const isSelected = field.value.includes(value);
+                      return (
+                        <Button
+                          key={value}
+                          type="button"
+                          variant={isSelected ? "default" : "outline"}
+                          onClick={() => {
+                            const updatedMotivations = isSelected
+                              ? field.value.filter((m: MotivationType) => m !== value)
+                              : [...field.value, value];
+                            field.onChange(updatedMotivations);
+                          }}
+                          className="h-32 flex flex-col items-center justify-center"
+                          aria-pressed={isSelected}
+                        >
+                          <Icon className="w-8 h-8 mb-2" />
+                          <span className="text-sm font-medium text-center">{label}</span>
+                        </Button>
+                      );
+                    })}
+                  </div>
+                </fieldset>
                 <FormMessage />
               </FormItem>
             )}
           />
 
+          {/* Adicione o campo de input para "Other" motivation */}
           {form.watch("motivations").includes("Other") && (
             <FormField
               control={form.control}
               name="otherMotivation"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-lg font-semibold">What's your <strong>other motivation</strong>?</FormLabel>
+                  <FormLabel>What's your <strong>other motivation</strong>?</FormLabel>
                   <FormControl>
-                    <Input placeholder="Your other motivation" {...field} className="h-10" />
+                    <Input placeholder="Your other motivation" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -559,35 +644,41 @@ const OnboardingForm: React.FC = () => {
             name="innovationExperience"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-lg font-semibold">What's your <strong>experience with innovation or entrepreneurship</strong>?</FormLabel>
-                <div className="grid grid-cols-3 gap-4 mt-3">
-                  {innovationExperienceOptions.map(({ value, label, icon: Icon }) => (
-                    <Button
-                      key={value}
-                      type="button"
-                      variant={field.value === value ? "default" : "outline"}
-                      onClick={() => field.onChange(value)}
-                      className="h-32 flex flex-col items-center justify-center"
-                    >
-                      <Icon className="w-8 h-8 mb-2" />
-                      <span className="text-sm font-medium text-center">{label}</span>
-                    </Button>
-                  ))}
-                </div>
+                <fieldset>
+                  <legend className="text-lg font-semibold mb-3">
+                    What's your <strong>experience with innovation or entrepreneurship</strong>?
+                  </legend>
+                  <div className="grid grid-cols-3 gap-4">
+                    {innovationExperienceOptions.map(({ value, label, icon: Icon }) => (
+                      <Button
+                        key={value}
+                        type="button"
+                        variant={field.value === value ? "default" : "outline"}
+                        onClick={() => field.onChange(value)}
+                        className="h-32 flex flex-col items-center justify-center"
+                        aria-pressed={field.value === value}
+                      >
+                        <Icon className="w-8 h-8 mb-2" />
+                        <span className="text-sm font-medium text-center">{label}</span>
+                      </Button>
+                    ))}
+                  </div>
+                </fieldset>
                 <FormMessage />
               </FormItem>
             )}
           />
 
+          {/* Adicione o campo de input para "Other" innovation experience */}
           {form.watch("innovationExperience") === "Other" && (
             <FormField
               control={form.control}
               name="otherInnovationExperience"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-lg font-semibold">What's your <strong>other experience</strong> with innovation or entrepreneurship?</FormLabel>
+                  <FormLabel>What's your <strong>other experience</strong> with innovation or entrepreneurship?</FormLabel>
                   <FormControl>
-                    <Input placeholder="Your other experience" {...field} className="h-10" />
+                    <Input placeholder="Your other experience" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -628,21 +719,26 @@ const OnboardingForm: React.FC = () => {
             name="academicLevel"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-lg font-semibold">Current <strong>Academic Level</strong>:</FormLabel>
-                <div className="grid grid-cols-2 gap-4 mt-3">
-                  {academicLevelOptions.map(({ value, label, icon: Icon }) => (
-                    <Button
-                      key={value}
-                      type="button"
-                      variant={field.value === value ? "default" : "outline"}
-                      onClick={() => field.onChange(value)}
-                      className="h-32 flex flex-col items-center justify-center"
-                    >
-                      <Icon className="w-8 h-8 mb-2" />
-                      <span className="text-sm font-medium text-center">{label}</span>
-                    </Button>
-                  ))}
-                </div>
+                <fieldset>
+                  <legend className="text-lg font-semibold mb-3">
+                    Current <strong>Academic Level</strong>:
+                  </legend>
+                  <div className="grid grid-cols-2 gap-4">
+                    {academicLevelOptions.map(({ value, label, icon: Icon }) => (
+                      <Button
+                        key={value}
+                        type="button"
+                        variant={field.value === value ? "default" : "outline"}
+                        onClick={() => field.onChange(value)}
+                        className="h-32 flex flex-col items-center justify-center"
+                        aria-pressed={field.value === value}
+                      >
+                        <Icon className="w-8 h-8 mb-2" />
+                        <span className="text-sm font-medium text-center">{label}</span>
+                      </Button>
+                    ))}
+                  </div>
+                </fieldset>
                 <FormMessage />
               </FormItem>
             )}
@@ -709,21 +805,23 @@ const OnboardingForm: React.FC = () => {
             <Separator className="my-6" />
           </div>
 
-          {/* Terms Agreement Checkbox */}
+          {/* Checkbox de Concordância com os Termos */}
           <FormField
             control={form.control}
             name="termsAgreement"
             render={({ field }) => (
               <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                 <FormControl>
-                  <Checkbox
+                  <CustomCheckbox
+                    id="termsAgreement"
+                    name="termsAgreement"
                     checked={field.value}
                     onCheckedChange={field.onChange}
                   />
                 </FormControl>
                 <div className="space-y-1 leading-none">
-                  <FormLabel className="text-sm font-medium">
-                    I have read and agree to the <strong>Terms of Use and Data Protection Policy</strong>.
+                  <FormLabel htmlFor="termsAgreement" className="text-sm font-medium">
+                    Li e concordo com os <strong>Termos de Uso e Política de Proteção de Dados</strong>.
                   </FormLabel>
                   <FormMessage />
                 </div>
@@ -739,7 +837,7 @@ const OnboardingForm: React.FC = () => {
             type="submit" 
             className="w-full mt-8 h-12 text-lg font-semibold"
             disabled={isSubmitting}
-            onClick={() => addLog('Submit button clicked')}
+            onClick={() => addLog('Botão de envio clicado')}
           >
             {isSubmitting ? 'Enviando...' : 'Enviar'}
           </Button>
