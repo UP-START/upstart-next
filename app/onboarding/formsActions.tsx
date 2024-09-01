@@ -1,5 +1,5 @@
-import { createClient } from '@supabase/supabase-js';
 import { z } from 'zod';
+import { createClient } from '@supabase/supabase-js';
 
 // Certifique-se de que estas variáveis de ambiente estão definidas
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -36,12 +36,24 @@ const formatArrayForSupabase = (arr: string[]): string => {
 };
 
 export const submitForm = async (data: FormData) => {
+  console.log('Formulário iniciado');
+
   try {
     // Validar os dados do formulário
     formSchema.parse(data);
 
-    // Preparar os dados para o Supabase
-    const supabaseData = {
+    // Obter o usuário autenticado do endpoint
+    const response = await fetch('/api/use-auth');
+    const userData = await response.json();
+
+    if (!userData.authenticated || !userData.user) {
+      throw new Error('Usuário não autenticado');
+    }
+
+    const userId = userData.user.id;
+
+    // Preparar os dados para enviar para o Supabase
+    const payload = {
       first_name: data.firstName,
       last_name: data.lastName,
       email: data.email,
@@ -58,16 +70,19 @@ export const submitForm = async (data: FormData) => {
       other_motivation: data.otherMotivation,
       innovation_experience: data.innovationExperience,
       other_innovation_experience: data.otherInnovationExperience,
+      user_id: userId, // Adiciona o user_id do usuário autenticado
     };
 
-    console.log('Dados preparados para o Supabase:', supabaseData);
+    console.log('Dados preparados para o Supabase:', payload);
 
-    // Inserir dados no Supabase
+    // Inserir os dados no Supabase
     const { data: insertedData, error } = await supabase
       .from('onboarding_answers')
-      .insert([supabaseData]);
+      .insert([payload]);
 
-    if (error) throw error;
+    if (error) {
+      throw new Error('Erro ao inserir os dados no Supabase: ' + error.message);
+    }
 
     console.log('Dados inseridos com sucesso:', insertedData);
     return { success: true, data: insertedData };
