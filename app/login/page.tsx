@@ -47,12 +47,7 @@ export default async function Login({
       </CardHeader>
         <CardContent className="flex flex-col gap-4">
           <OAuthButtons />
-          <div className="text-center text-sm">
-            Don&apos;t have an account?{" "}
-            <button formAction={signup} form="login-form" className="text-primary hover:underline">
-              Sign up
-            </button>
-          </div>
+         
         </CardContent>
       </Card>
     </section>

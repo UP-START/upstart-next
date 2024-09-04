@@ -304,7 +304,8 @@ const OnboardingForm: React.FC = () => {
     const result = await submitForm(data);
     
     if (result.success) {
-      router.push('/profile');
+      // Redirecionar para o link do Discord
+      window.location.href = 'https://discord.gg/3XXEjGFtjq';
     } else {
       setSubmitError(result.error);
     }

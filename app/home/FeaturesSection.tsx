@@ -1,55 +1,82 @@
+"use client"
 import React from 'react';
 import { WobbleCard } from "@/components/ui/wobble-card";
-import { Users, PenTool, Lightbulb, Target, Zap } from 'lucide-react';
+import { Users, PenTool, Target, Zap, GraduationCap, Calendar } from 'lucide-react';
 
-const features = [
+interface Feature {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  size: 'small' | 'large';
+}
+
+const features: Feature[] = [
   {
-    icon: <Users className="h-6 w-6 mb-2" />,
-    title: "Join the Community",
-    description: "Become an active member of our vibrant community. Engage in events, channels, and forums to connect with like-minded innovators and mentors."
+    icon: <Users />,
+    title: "A Community for Innovators",
+    description: "Connect with fellow innovators, mentors, and industry experts. Our community accelerates your growth and opens doors to new opportunities.",
+    size: "large"
   },
   {
-    icon: <PenTool className="h-6 w-6 mb-2" />,
-    title: "Post Your Startup Ideas",
-    description: "Share your startup ideas on our forum to receive valuable feedback from the community and find ideal teammates to bring your vision to life."
+    icon: <PenTool />,
+    title: "Validate Your Ideas",
+    description: "Get instant feedback on your startup concepts from a diverse, knowledgeable community. Refine your ideas before you invest time and resources.",
+    size: "small"
   },
   {
-    icon: <Lightbulb className="h-6 w-6 mb-2" />,
-    title: "Idea Incubation",
-    description: "Nurture your ideas from concept to reality. Our mentors and resources are here to guide you through every stage of the innovation process."
+    icon: <Target />,
+    title: "Develop your Skills",
+    description: "Access targeted workshops and hands-on projects that equip you with the skills today's innovators need. Stay ahead of the curve in your field.",
+    size: "small"
   },
   {
-    icon: <Target className="h-6 w-6 mb-2" />,
-    title: "Skill Development",
-    description: "Enhance your innovative capabilities through targeted workshops, hands-on projects, and industry-led seminars tailored for aspiring innovators."
+    icon: <Zap />,
+    title: "Create Real-World Impact",
+    description: "Work on projects that matter. We'll help you channel your skills towards solving pressing global challenges, making a tangible difference.",
+    size: "large"
   },
   {
-    icon: <Zap className="h-6 w-6 mb-2" />,
-    title: "Innovate for Impact",
-    description: "Channel your creativity towards solving real-world challenges. We'll help you develop innovations that make a positive difference in the world."
+    icon: <GraduationCap />,
+    title: "Learn from the Best",
+    description: "Gain insights from seasoned innovators and industry leaders. Our mentorship program provides personalized guidance to accelerate your success.",
+    size: "small"
+  },
+  {
+    icon: <Calendar />,
+    title: "Expand Your Network",
+    description: "Participate in curated events and workshops. Build valuable connections that can lead to partnerships, funding, or your next big opportunity.",
+    size: "small"
   }
 ];
 
-export function FeaturesSection() {
+interface FeaturesSectionProps {
+  id?: string;
+}
+
+export function FeaturesSection({ id }: FeaturesSectionProps) {
   return (
-    <section className="w-full py-12 md:py-24 lg:py-32">
-      <div className="container space-y-12 px-4 md:px-6">
-        <div className="flex flex-col items-center justify-center space-y-4 text-center">
-          <div className="space-y-2">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Empowering Your Innovative Potential</h2>
-            <p className="max-w-[900px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-              We believe every individual has the potential to make a positive impact in the world. 
-              At UPSTART, we empower you to explore your true potential and turn your ideas into reality.
-            </p>
-          </div>
+    <section id={id} className="w-full py-12 md:py-24 lg:py-32">
+      <div className="container px-4 md:px-6">
+        <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
+          <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">We believe that anyone can become an Innovator</h2>
+          <p className="max-w-[900px] text-xl">
+            At UPSTART, we provide the tools, community, and opportunities you need to transform your ideas into reality. Here's how we accelerate your path to innovation:
+          </p>
         </div>
-        <div className="mx-auto grid items-start gap-8 sm:max-w-4xl sm:grid-cols-2 md:gap-12 lg:max-w-5xl lg:grid-cols-3">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {features.map((feature, index) => (
-            <WobbleCard key={index} className="h-full">
-              <div className="flex flex-col items-center text-center p-4">
-                {feature.icon}
-                <h3 className="text-lg font-bold mb-2">{feature.title}</h3>
-                <p className="text-sm text-gray-200">{feature.description}</p>
+            <WobbleCard 
+              key={index} 
+              className={`h-full ${feature.size === 'large' ? 'md:col-span-2' : ''}`}
+            >
+              <div className="flex flex-col items-center text-center p-6 h-full">
+                <div className="mb-4">
+                  {React.cloneElement(feature.icon as React.ReactElement, { className: "w-12 h-12" })}
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
+                  <p className="text-base">{feature.description}</p>
+                </div>
               </div>
             </WobbleCard>
           ))}

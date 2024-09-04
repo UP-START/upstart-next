@@ -1,5 +1,6 @@
 "use client"
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import {
   motion,
   AnimatePresence,
@@ -59,7 +60,7 @@ export const FloatingNav = ({
         )}
       >
         {navItems.map((navItem: any, idx: number) => (
-          <a
+          <Link
             key={`link-${idx}`}
             href={navItem.link}
             className={cn(
@@ -68,12 +69,14 @@ export const FloatingNav = ({
           >
             <span className="block sm:hidden">{navItem.icon}</span>
             <span className="hidden sm:block text-sm">{navItem.name}</span>
-          </a>
+          </Link>
         ))}
-        <button className="border text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] text-black dark:text-white px-4 py-2 rounded-full">
-          <span>Login</span>
-          <span className="absolute inset-x-0 w-1/2 mx-auto -bottom-px bg-gradient-to-r from-transparent via-blue-500 to-transparent  h-px" />
-        </button>
+        <Link href="/login">
+          <button className="border text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] text-black dark:text-white px-4 py-2 rounded-full">
+            <span>Login</span>
+            <span className="absolute inset-x-0 w-1/2 mx-auto -bottom-px bg-gradient-to-r from-transparent via-blue-500 to-transparent h-px" />
+          </button>
+        </Link>
       </motion.div>
     </AnimatePresence>
   );
